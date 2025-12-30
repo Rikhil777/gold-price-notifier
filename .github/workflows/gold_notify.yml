@@ -1,0 +1,29 @@
+name: Daily Gold Price Notification
+
+on:
+  schedule:
+    - cron: "30 3 * * *"   # 9:00 AM IST
+  workflow_dispatch:
+
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Run gold notifier
+        env:
+          GOLD_API_KEY: ${{ secrets.GOLD_API_KEY }}
+          BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+          CHAT_ID: ${{ secrets.CHAT_ID }}
+        run: python gold_notify.py
